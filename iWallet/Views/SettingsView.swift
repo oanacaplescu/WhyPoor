@@ -1,10 +1,14 @@
 import SwiftUI
+import SwiftData
 
 struct SettingsView: View {
+    @Environment(\.modelContext) private var context
+    @Query private var categories: [ExpenseCategory]
+
     @AppStorage("salaryDay") private var salaryDay: Int = 1
     @AppStorage("currencyCode") private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
 
-    private let commonCurrencies = ["RON", "EUR", "GBP", "PLN", "CZK"]
+    private let commonCurrencies = ["USD", "EUR", "GBP", "RON", "CHF", "JPY", "CAD", "AUD"]
 
     var body: some View {
         Form {
@@ -14,14 +18,92 @@ struct SettingsView: View {
                     .font(.caption)
                     .foregroundStyle(.secondary)
             }
+
             Section("Currency") {
-                            Picker("Currency", selection: $currencyCode) {
-                                ForEach(commonCurrencies, id: \.self) { code in
-                                    Text(code).tag(code)
-                                }
-                            }
-                        }
+                Picker("Currency", selection: $currencyCode) {
+                    ForEach(commonCurrencies, id: \.self) { code in
+                        Text(code).tag(code)
+                    }
+                }
+            }
+
+            #if DEBUG
+            Section("Testing") {
+                Button("Generate Sample Data (90 days)") {
+                    generateSampleData()
+                }
+                Button("Delete All Expenses", role: .destructive) {
+                    deleteAllExpenses()
+                }
+            }
+            #endif
         }
         .navigationTitle("Settings")
+    }
+
+    #if DEBUG
+    private func generateSampleData() {
+        let sampleCategories = [
+            ("Groceries", "cart.fill"),
+            ("Rent", "house.fill"),
+            ("Transport", "car.fill"),
+            ("Dining Out", "fork.knife"),
+            ("Entertainment", "gamecontroller.fill"),
+            ("Utilities", "bolt.fill"),
+            ("Shopping", "bag.fill"),
+            ("Health", "heart.fill")
+        ]
+
+        var allCategories = categories
+        for (name, icon) in sampleCategories {
+            if !allCategories.contains(where: { $0.name == name }) {
+                let colorHex = ExpenseCategory.palette[allCategories.count % ExpenseCategory.palette.count]
+                let newCat = ExpenseCategory(name: name, colorHex: colorHex, iconName: icon)
+                context.insert(newCat)
+                allCategories.append(newCat)
+            }
+        }
+
+        let descriptions = ["", "", "", "weekend trip", "with friends", "monthly bill", "impulse buy", "gift"]
+        let calendar = Calendar.current
+
+        for dayOffset in 0..<90 {
+            guard let date = calendar.date(byAdding: .day, value: -dayOffset, to: .now) else { continue }
+            let expenseCount = Int.random(in: 0...2)
+            for _ in 0..<expenseCount {
+                let category = allCategories.randomElement()!
+                let amount = Decimal(Double.random(in: 5...250)).rounded(2)
+                let desc = descriptions.randomElement()!
+                let expense = Expense(
+                    amount: amount,
+                    category: category.name,
+                    expenseDescription: desc.isEmpty ? nil : desc,
+                    date: date
+                )
+                context.insert(expense)
+            }
+        }
+
+        try? context.save()
+    }
+
+    private func deleteAllExpenses() {
+        let descriptor = FetchDescriptor<Expense>()
+        if let all = try? context.fetch(descriptor) {
+            for expense in all {
+                context.delete(expense)
+            }
+        }
+        try? context.save()
+    }
+    #endif
+}
+
+private extension Decimal {
+    func rounded(_ scale: Int) -> Decimal {
+        var result = Decimal()
+        var mutableSelf = self
+        NSDecimalRound(&result, &mutableSelf, scale, .plain)
+        return result
     }
 }
