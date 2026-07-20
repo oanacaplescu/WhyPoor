@@ -32,54 +32,79 @@ struct ExpenseListView: View {
 
     var body: some View {
         NavigationStack {
-            List {
-                Section {
-                    HStack {
-                        Text("Total this period")
-                        Spacer()
-                        Text(total, format: .currency(code: currencyCode))
-                            .bold()
-                            .foregroundStyle(AppTheme.slate)
+            ZStack {
+                List {
+                    Section {
+                        VStack(alignment: .center, spacing: 4) {
+                            Text("Expenses")
+                                .font(.subheadline)
+                                .foregroundStyle(.secondary)
+                            Text(total, format: .currency(code: currencyCode))
+                                .font(.system(size: 34, weight: .bold))
+                                .foregroundStyle(AppTheme.slate)
+                        }
+                        .frame(maxWidth: .infinity)
+                        .padding(.vertical, 8)
+                    }
+                    .listRowBackground(AppTheme.sand.opacity(0.25))
+                    Section {
+                        ForEach(periodExpenses) { expense in
+                            let style = style(for: expense.category)
+                            HStack(spacing: 12) {
+                                Image(systemName: style.icon)
+                                    .foregroundStyle(.white)
+                                    .frame(width: 32, height: 32)
+                                    .background(Circle().fill(style.color))
+                                
+                                VStack(alignment: .leading) {
+                                    Text(expense.category)
+                                    if let desc = expense.expenseDescription, !desc.isEmpty {
+                                        Text(desc)
+                                            .font(.caption)
+                                            .foregroundStyle(.secondary)
+                                    }
+                                }
+                                
+                                Spacer()
+                                Text(expense.amount, format: .currency(code: currencyCode))
+                            }
+                        }
+                        .onDelete(perform: deleteExpenses)
                     }
                 }
-                .listRowBackground(AppTheme.sand.opacity(0.25))
-                Section {
-                    ForEach(periodExpenses) { expense in
-                        let style = style(for: expense.category)
-                        HStack(spacing: 12) {
-                            Image(systemName: style.icon)
-                                .foregroundStyle(.white)
-                                .frame(width: 32, height: 32)
-                                .background(Circle().fill(style.color))
-
-                            VStack(alignment: .leading) {
-                                Text(expense.category)
-                                if let desc = expense.expenseDescription, !desc.isEmpty {
-                                    Text(desc)
-                                        .font(.caption)
-                                        .foregroundStyle(.secondary)
-                                }
-                            }
-
-                            Spacer()
-                            Text(expense.amount, format: .currency(code: currencyCode))
-                        }
+                VStack {
+                    Spacer()
+                    Button {
+                        showingAddExpense = true
+                    } label: {
+                        Image(systemName: "plus")
+                            .font(.system(size: 24, weight: .semibold))
+                            .foregroundStyle(AppTheme.slate)
+                            .frame(width: 60, height: 60)
+                            .background(.ultraThinMaterial, in: Circle())
+                            .overlay(Circle().stroke(AppTheme.teal.opacity(0.4), lineWidth: 1))
+                            .shadow(color: .black.opacity(0.15), radius: 10, y: 4)
                     }
-                    .onDelete(perform: deleteExpenses)
+                    .padding(.bottom, 24)
                 }
             }
-            .navigationTitle(periodTitle)
+            .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button { showingSettings = true } label: {
                         Image(systemName: "gearshape")
                     }
                 }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showingAddExpense = true } label: {
-                        Image(systemName: "plus")
-                    }
+                ToolbarItem(placement: .principal) {
+                    Text(periodTitle)
+                        .font(.system(size: 20, weight: .semibold))
+                        .foregroundStyle(AppTheme.slate)
                 }
+                //                ToolbarItem(placement: .topBarTrailing) {
+                //                    Button { showingAddExpense = true } label: {
+                //                        Image(systemName: "plus")
+                //                    }
+                //                }
             }
             .sheet(isPresented: $showingAddExpense) {
                 AddExpenseView()
