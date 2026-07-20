@@ -11,22 +11,15 @@ import SwiftData
 @main
 struct iWalletApp: App {
     var sharedModelContainer: ModelContainer = {
-        let schema = Schema([
-            Item.self,
-        ])
-        let modelConfiguration = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+            let schema = Schema([Expense.self, ExpenseCategory.self])
+            let config = ModelConfiguration(schema: schema, isStoredInMemoryOnly: false)
+            return try! ModelContainer(for: schema, configurations: [config])
+        }()
 
-        do {
-            return try ModelContainer(for: schema, configurations: [modelConfiguration])
-        } catch {
-            fatalError("Could not create ModelContainer: \(error)")
+        var body: some Scene {
+            WindowGroup {
+                ExpenseListView()
+            }
+            .modelContainer(sharedModelContainer)
         }
-    }()
-
-    var body: some Scene {
-        WindowGroup {
-            ContentView()
-        }
-        .modelContainer(sharedModelContainer)
-    }
 }
