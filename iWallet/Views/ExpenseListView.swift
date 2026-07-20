@@ -39,8 +39,10 @@ struct ExpenseListView: View {
                         Spacer()
                         Text(total, format: .currency(code: currencyCode))
                             .bold()
+                            .foregroundStyle(AppTheme.slate)
                     }
                 }
+                .listRowBackground(AppTheme.sand.opacity(0.25))
                 Section {
                     ForEach(periodExpenses) { expense in
                         let style = style(for: expense.category)

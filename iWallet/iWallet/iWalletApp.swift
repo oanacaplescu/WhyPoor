@@ -19,6 +19,7 @@ struct iWalletApp: App {
         var body: some Scene {
             WindowGroup {
                 ExpenseListView()
+                    .tint(AppTheme.accent)
             }
             .modelContainer(sharedModelContainer)
         }

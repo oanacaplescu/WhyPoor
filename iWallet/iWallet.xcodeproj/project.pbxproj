@@ -14,6 +14,7 @@
 		360F2391300E7C4500E73ED6 /* AddExpenseView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2388300E78E700E73ED6 /* AddExpenseView.swift */; };
 		360F2392300E7C4A00E73ED6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2389300E78F300E73ED6 /* SettingsView.swift */; };
 		360F2394300E83E200E73ED6 /* CategoryColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2393300E83E000E73ED6 /* CategoryColors.swift */; };
+		360F2396300E876D00E73ED6 /* AppThemes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2395300E876800E73ED6 /* AppThemes.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -25,6 +26,7 @@
 		360F238B300E79AF00E73ED6 /* ExpenseCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCategory.swift; sourceTree = "<group>"; };
 		360F238C300E79BB00E73ED6 /* BillingPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingPeriod.swift; sourceTree = "<group>"; };
 		360F2393300E83E000E73ED6 /* CategoryColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryColors.swift; sourceTree = "<group>"; };
+		360F2395300E876800E73ED6 /* AppThemes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemes.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -67,6 +69,7 @@
 		360F2385300E779F00E73ED6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				360F2395300E876800E73ED6 /* AppThemes.swift */,
 				360F2393300E83E000E73ED6 /* CategoryColors.swift */,
 				360F238C300E79BB00E73ED6 /* BillingPeriod.swift */,
 				360F238B300E79AF00E73ED6 /* ExpenseCategory.swift */,
@@ -163,6 +166,7 @@
 				360F238E300E7C0D00E73ED6 /* Expense.swift in Sources */,
 				360F238D300E7BF700E73ED6 /* ExpenseCategory.swift in Sources */,
 				360F2391300E7C4500E73ED6 /* AddExpenseView.swift in Sources */,
+				360F2396300E876D00E73ED6 /* AppThemes.swift in Sources */,
 				360F2390300E7C3400E73ED6 /* BillingPeriod.swift in Sources */,
 				360F238F300E7C2500E73ED6 /* ExpenseListView.swift in Sources */,
 				360F2394300E83E200E73ED6 /* CategoryColors.swift in Sources */,
