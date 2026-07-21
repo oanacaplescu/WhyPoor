@@ -109,9 +109,11 @@ struct ExpenseListView: View {
                 }
                 
                 if showingPeriodPicker {
-                    Color.black.opacity(0.001)
+                    Color.clear
+                        .contentShape(Rectangle())
                         .ignoresSafeArea()
                         .onTapGesture { showingPeriodPicker = false }
+                        .zIndex(1)
                     
                     VStack(spacing: 0) {
                         PeriodPickerView(
@@ -134,10 +136,11 @@ struct ExpenseListView: View {
                         .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
                         
                         Spacer()
+                        }
+                        .frame(maxWidth: .infinity, alignment: .center)
+                        .padding(.top, 8)
+                        .zIndex(2)
                     }
-                    .frame(maxWidth: .infinity, alignment: .center)
-                    .padding(.top, 8)
-                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
