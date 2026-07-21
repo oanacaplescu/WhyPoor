@@ -155,11 +155,11 @@ struct ExpenseListView: View {
                         Image(systemName: "gearshape")
                     }
                 }
-                ToolbarItem(placement: .topBarLeading) {
-                        Button { showingCategoryManagement = true } label: {
-                            Image(systemName: "tag")
-                        }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showingCategoryManagement = true } label: {
+                        Image(systemName: "tag")
                     }
+                }
                 ToolbarItem(placement: .principal) {
                     Button {
                         showingPeriodPicker = true
