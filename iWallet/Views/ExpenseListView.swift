@@ -27,7 +27,15 @@ struct ExpenseListView: View {
     private var periodExpenses: [Expense] {
         allExpenses.filter { $0.date >= currentPeriod.start && $0.date <= currentPeriod.end }
     }
-
+    
+    private var groupedExpenses: [(day: Date, expenses: [Expense])] {
+        let calendar = Calendar.current
+        let grouped = Dictionary(grouping: periodExpenses) { calendar.startOfDay(for: $0.date) }
+        return grouped
+            .sorted { $0.key > $1.key }
+            .map { (day: $0.key, expenses: $0.value.sorted { $0.date > $1.date }) }
+    }
+    
     private var total: Decimal {
         periodExpenses.reduce(0) { $0 + $1.amount }
     }
@@ -69,32 +77,43 @@ struct ExpenseListView: View {
                     .listRowBackground(AppTheme.sand.opacity(0.25))
                     
                     Section {
-                    ForEach(periodExpenses) { expense in
-                            let style = style(for: expense.category)
-                            HStack(spacing: 12) {
-                                Image(systemName: style.icon)
-                                    .foregroundStyle(.white)
-                                    .frame(width: 32, height: 32)
-                                    .background(Circle().fill(style.color))
-
-                                VStack(alignment: .leading) {
-                                    Text(expense.category)
-                                    if let desc = expense.expenseDescription, !desc.isEmpty {
-                                        Text(desc)
-                                            .font(.caption)
-                                            .foregroundStyle(.secondary)
+                        ForEach(groupedExpenses, id: \.day) { group in
+                            Section {
+                                ForEach(group.expenses) { expense in
+                                    let style = style(for: expense.category)
+                                    HStack(spacing: 12) {
+                                        Image(systemName: style.icon)
+                                            .foregroundStyle(.white)
+                                            .frame(width: 32, height: 32)
+                                            .background(Circle().fill(style.color))
+                                        
+                                        VStack(alignment: .leading) {
+                                            Text(expense.category)
+                                            if let desc = expense.expenseDescription, !desc.isEmpty {
+                                                Text(desc)
+                                                    .font(.caption)
+                                                    .foregroundStyle(.secondary)
+                                            }
+                                        }
+                                        
+                                        Spacer()
+                                        Text(expense.amount, format: .currency(code: currencyCode))
+                                    }
+                                    .contentShape(Rectangle())
+                                    .onTapGesture {
+                                        expenseToEdit = expense
                                     }
                                 }
-
-                                Spacer()
-                                Text(expense.amount, format: .currency(code: currencyCode))
-                            }
-                            .contentShape(Rectangle())
-                            .onTapGesture {
-                                expenseToEdit = expense
-                            }
+                                .onDelete { offsets in
+                                    deleteExpenses(offsets, in: group.expenses)
+                                }
+                            } header: {
+                                Text(dayLabel(for: group.day))
+                                        .font(.subheadline)
+                                        .fontWeight(.semibold)
+                                        .foregroundStyle(AppTheme.slate)
+                                        .padding(.top, 8)                            }
                         }
-                        .onDelete(perform: deleteExpenses)
                     }
                 }
                 
@@ -197,9 +216,20 @@ struct ExpenseListView: View {
         title(for: currentPeriod)
     }
 
-    private func deleteExpenses(at offsets: IndexSet) {
+    private func deleteExpenses(_ offsets: IndexSet, in expenses: [Expense]) {
         for index in offsets {
-            context.delete(periodExpenses[index])
+            context.delete(expenses[index])
         }
+    }
+
+    private func dayLabel(for date: Date) -> String {
+        if Calendar.current.isDateInToday(date) {
+            return "Today"
+        } else if Calendar.current.isDateInYesterday(date) {
+            return "Yesterday"
+        }
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, MMM d"
+        return formatter.string(from: date)
     }
 }
