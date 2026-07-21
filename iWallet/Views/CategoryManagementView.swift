@@ -18,16 +18,20 @@ struct CategoryManagementView: View {
                             .background(Circle().fill(Color(hex: category.colorHex)))
                         Text(category.name)
                     }
+                    .swipeActions {
+                        Button(role: .destructive) {
+                            delete(category)
+                        } label: {
+                            Label("Delete", systemImage: "trash")
+                        }
+                    }
                 }
-                .onDelete(perform: deleteCategories)
                 .onMove(perform: moveCategories)
             }
+            .environment(\.editMode, .constant(.active))
             .navigationTitle("Categories")
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
-                ToolbarItem(placement: .topBarLeading) {
-                    EditButton()
-                }
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         showingAddCategory = true
@@ -42,10 +46,8 @@ struct CategoryManagementView: View {
         }
     }
 
-    private func deleteCategories(at offsets: IndexSet) {
-        for index in offsets {
-            context.delete(categories[index])
-        }
+    private func delete(_ category: ExpenseCategory) {
+        context.delete(category)
     }
 
     private func moveCategories(from source: IndexSet, to destination: Int) {
