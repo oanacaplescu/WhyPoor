@@ -14,6 +14,7 @@ struct ExpenseListView: View {
     @State private var showingPeriodPicker = false
     @State private var selectedPeriod: BillingPeriod?
     @State private var expenseToEdit: Expense?
+    @State private var showingCategoryManagement = false
 
     private var currentPeriod: BillingPeriod {
         selectedPeriod ?? BillingPeriod.containing(date: .now, salaryDay: salaryDay)
@@ -154,6 +155,11 @@ struct ExpenseListView: View {
                         Image(systemName: "gearshape")
                     }
                 }
+                ToolbarItem(placement: .topBarLeading) {
+                        Button { showingCategoryManagement = true } label: {
+                            Image(systemName: "tag")
+                        }
+                    }
                 ToolbarItem(placement: .principal) {
                     Button {
                         showingPeriodPicker = true
@@ -174,6 +180,9 @@ struct ExpenseListView: View {
             }
             .sheet(item: $expenseToEdit) { expense in
                 AddExpenseView(expenseToEdit: expense)
+            }
+            .sheet(isPresented: $showingCategoryManagement) {
+                CategoryManagementView()
             }
         }
     }

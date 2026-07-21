@@ -4,7 +4,7 @@ import SwiftData
 struct AddExpenseView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
-    @Query(sort: \ExpenseCategory.name) private var categories: [ExpenseCategory]
+    @Query(sort: \ExpenseCategory.sortOrder) private var categories: [ExpenseCategory]
     @AppStorage("currencyCode") private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
 
     /// Pass an existing expense to edit it; leave nil to create a new one.
@@ -119,7 +119,7 @@ struct AddExpenseView: View {
         var categoryName = selectedCategory?.name ?? ""
         if showingNewCategoryField, !newCategoryName.isEmpty {
             let colorHex = ExpenseCategory.palette[categories.count % ExpenseCategory.palette.count]
-            let newCategory = ExpenseCategory(name: newCategoryName, colorHex: colorHex, iconName: newCategoryIcon)
+            let newCategory = ExpenseCategory(name: newCategoryName, colorHex: colorHex, iconName: newCategoryIcon, sortOrder: categories.count)
             context.insert(newCategory)
             categoryName = newCategoryName
         }
