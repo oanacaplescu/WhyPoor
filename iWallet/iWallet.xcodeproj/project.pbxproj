@@ -15,6 +15,7 @@
 		360F2392300E7C4A00E73ED6 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2389300E78F300E73ED6 /* SettingsView.swift */; };
 		360F2394300E83E200E73ED6 /* CategoryColors.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2393300E83E000E73ED6 /* CategoryColors.swift */; };
 		360F2396300E876D00E73ED6 /* AppThemes.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2395300E876800E73ED6 /* AppThemes.swift */; };
+		360F2398300F351700E73ED6 /* PeriodPickerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2397300F351600E73ED6 /* PeriodPickerView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -27,6 +28,7 @@
 		360F238C300E79BB00E73ED6 /* BillingPeriod.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BillingPeriod.swift; sourceTree = "<group>"; };
 		360F2393300E83E000E73ED6 /* CategoryColors.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryColors.swift; sourceTree = "<group>"; };
 		360F2395300E876800E73ED6 /* AppThemes.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppThemes.swift; sourceTree = "<group>"; };
+		360F2397300F351600E73ED6 /* PeriodPickerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PeriodPickerView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -81,6 +83,7 @@
 		360F2386300E77A900E73ED6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				360F2397300F351600E73ED6 /* PeriodPickerView.swift */,
 				360F2389300E78F300E73ED6 /* SettingsView.swift */,
 				360F2388300E78E700E73ED6 /* AddExpenseView.swift */,
 				360F2387300E78B700E73ED6 /* ExpenseListView.swift */,
@@ -170,6 +173,7 @@
 				360F2390300E7C3400E73ED6 /* BillingPeriod.swift in Sources */,
 				360F238F300E7C2500E73ED6 /* ExpenseListView.swift in Sources */,
 				360F2394300E83E200E73ED6 /* CategoryColors.swift in Sources */,
+				360F2398300F351700E73ED6 /* PeriodPickerView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -315,7 +319,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
@@ -359,7 +363,7 @@
 				"INFOPLIST_KEY_UIStatusBarStyle[sdk=iphonesimulator*]" = UIStatusBarStyleDefault;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
-				IPHONEOS_DEPLOYMENT_TARGET = 17.6;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.6;
 				LD_RUNPATH_SEARCH_PATHS = "@executable_path/Frameworks";
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.5;

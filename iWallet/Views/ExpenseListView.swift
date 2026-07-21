@@ -1,5 +1,6 @@
 import SwiftUI
 import SwiftData
+import UIKit
 
 struct ExpenseListView: View {
     @Environment(\.modelContext) private var context
@@ -10,9 +11,15 @@ struct ExpenseListView: View {
 
     @State private var showingAddExpense = false
     @State private var showingSettings = false
+    @State private var showingPeriodPicker = false
+    @State private var selectedPeriod: BillingPeriod?
 
     private var currentPeriod: BillingPeriod {
-        BillingPeriod.containing(date: .now, salaryDay: salaryDay)
+        selectedPeriod ?? BillingPeriod.containing(date: .now, salaryDay: salaryDay)
+    }
+
+    private var availablePeriods: [BillingPeriod] {
+        BillingPeriod.recentPeriods(count: 12, salaryDay: salaryDay)
     }
 
     private var periodExpenses: [Expense] {
@@ -28,6 +35,17 @@ struct ExpenseListView: View {
             return (Color(hex: match.colorHex), match.iconName)
         }
         return (.gray, "tag.fill")
+    }
+
+    private func isCurrent(_ period: BillingPeriod) -> Bool {
+        let current = BillingPeriod.containing(date: .now, salaryDay: salaryDay)
+        return period.start == current.start
+    }
+
+    private func setPeriod(_ period: BillingPeriod?) {
+        UIView.performWithoutAnimation {
+            selectedPeriod = period
+        }
     }
 
     var body: some View {
@@ -47,6 +65,7 @@ struct ExpenseListView: View {
                         .padding(.vertical, 8)
                     }
                     .listRowBackground(AppTheme.sand.opacity(0.25))
+                    
                     Section {
                         ForEach(periodExpenses) { expense in
                             let style = style(for: expense.category)
@@ -72,6 +91,7 @@ struct ExpenseListView: View {
                         .onDelete(perform: deleteExpenses)
                     }
                 }
+                
                 VStack {
                     Spacer()
                     Button {
@@ -87,6 +107,37 @@ struct ExpenseListView: View {
                     }
                     .padding(.bottom, 24)
                 }
+                
+                if showingPeriodPicker {
+                    Color.black.opacity(0.001)
+                        .ignoresSafeArea()
+                        .onTapGesture { showingPeriodPicker = false }
+                    
+                    VStack(spacing: 0) {
+                        PeriodPickerView(
+                            periods: availablePeriods,
+                            currentPeriod: currentPeriod,
+                            isCurrent: isCurrent,
+                            title: title,
+                            onSelect: { period in
+                                setPeriod(period)
+                                showingPeriodPicker = false
+                            },
+                            onSelectCurrentMonth: {
+                                setPeriod(nil)
+                                showingPeriodPicker = false
+                            }
+                        )
+                        .frame(width: 240, height: 320)
+                        .background(Color(.systemBackground))
+                        .clipShape(RoundedRectangle(cornerRadius: 14))
+                        .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
+                        
+                        Spacer()
+                    }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 8)
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -96,15 +147,16 @@ struct ExpenseListView: View {
                     }
                 }
                 ToolbarItem(placement: .principal) {
-                    Text(periodTitle)
-                        .font(.system(size: 20, weight: .semibold))
-                        .foregroundStyle(AppTheme.slate)
+                    Button {
+                        showingPeriodPicker = true
+                    } label: {
+                        Text(periodTitle)
+                            .font(.system(size: 17, weight: .semibold))
+                            .foregroundStyle(AppTheme.slate)
+                            .lineLimit(1)
+                            .frame(width: 170, alignment: .center)
+                    }
                 }
-                //                ToolbarItem(placement: .topBarTrailing) {
-                //                    Button { showingAddExpense = true } label: {
-                //                        Image(systemName: "plus")
-                //                    }
-                //                }
             }
             .sheet(isPresented: $showingAddExpense) {
                 AddExpenseView()
@@ -115,10 +167,14 @@ struct ExpenseListView: View {
         }
     }
 
-    private var periodTitle: String {
+    private func title(for period: BillingPeriod) -> String {
         let formatter = DateFormatter()
-        formatter.dateFormat = "MMM d"
-        return "\(formatter.string(from: currentPeriod.start)) – \(formatter.string(from: currentPeriod.end))"
+        formatter.dateFormat = "MMMM yyyy"
+        return formatter.string(from: period.start)
+    }
+
+    private var periodTitle: String {
+        title(for: currentPeriod)
     }
 
     private func deleteExpenses(at offsets: IndexSet) {
