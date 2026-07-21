@@ -63,17 +63,30 @@ struct ExpenseListView: View {
             ZStack {
                 List {
                     Section {
-                        VStack(alignment: .center, spacing: 4) {
-                            Text("Expenses")
-                                .font(.subheadline)
-                                .foregroundStyle(.secondary)
-                            Text(total, format: .currency(code: currencyCode))
-                                .font(.system(size: 34, weight: .bold))
-                                .foregroundStyle(AppTheme.slate)
+                            NavigationLink {
+                                CategoryBreakdownView(
+                                    periodTitle: periodTitle,
+                                    allExpenses: allExpenses,
+                                    categories: allCategories,
+                                    currencyCode: currencyCode,
+                                    periodStart: currentPeriod.start,
+                                    periodEnd: currentPeriod.end
+                                )
+                            } label: {
+                                VStack(alignment: .center, spacing: 4) {
+                                    Text("Expenses")
+                                        .font(.subheadline)
+                                        .foregroundStyle(.secondary)
+                                    Text(total, format: .currency(code: currencyCode))
+                                        .font(.system(size: 34, weight: .bold))
+                                        .foregroundStyle(AppTheme.slate)
+                                }
+                                .frame(maxWidth: .infinity)
+                                .padding(.vertical, 8)
+                                .contentShape(Rectangle())
+                            }
+                            .buttonStyle(.plain)
                         }
-                        .frame(maxWidth: .infinity)
-                        .padding(.vertical, 8)
-                    }
                     .listRowBackground(AppTheme.sand.opacity(0.25))
                     
                     Section {
