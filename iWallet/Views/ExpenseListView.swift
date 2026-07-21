@@ -13,6 +13,7 @@ struct ExpenseListView: View {
     @State private var showingSettings = false
     @State private var showingPeriodPicker = false
     @State private var selectedPeriod: BillingPeriod?
+    @State private var expenseToEdit: Expense?
 
     private var currentPeriod: BillingPeriod {
         selectedPeriod ?? BillingPeriod.containing(date: .now, salaryDay: salaryDay)
@@ -67,14 +68,14 @@ struct ExpenseListView: View {
                     .listRowBackground(AppTheme.sand.opacity(0.25))
                     
                     Section {
-                        ForEach(periodExpenses) { expense in
+                    ForEach(periodExpenses) { expense in
                             let style = style(for: expense.category)
                             HStack(spacing: 12) {
                                 Image(systemName: style.icon)
                                     .foregroundStyle(.white)
                                     .frame(width: 32, height: 32)
                                     .background(Circle().fill(style.color))
-                                
+
                                 VStack(alignment: .leading) {
                                     Text(expense.category)
                                     if let desc = expense.expenseDescription, !desc.isEmpty {
@@ -83,9 +84,13 @@ struct ExpenseListView: View {
                                             .foregroundStyle(.secondary)
                                     }
                                 }
-                                
+
                                 Spacer()
                                 Text(expense.amount, format: .currency(code: currencyCode))
+                            }
+                            .contentShape(Rectangle())
+                            .onTapGesture {
+                                expenseToEdit = expense
                             }
                         }
                         .onDelete(perform: deleteExpenses)
@@ -166,6 +171,9 @@ struct ExpenseListView: View {
             }
             .sheet(isPresented: $showingSettings) {
                 NavigationStack { SettingsView() }
+            }
+            .sheet(item: $expenseToEdit) { expense in
+                AddExpenseView(expenseToEdit: expense)
             }
         }
     }
