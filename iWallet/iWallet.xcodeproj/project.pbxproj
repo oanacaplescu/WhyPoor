@@ -20,6 +20,8 @@
 		360F239C300F756200E73ED6 /* AddCategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F239B300F756100E73ED6 /* AddCategoryView.swift */; };
 		360F239E300FBDA600E73ED6 /* CategoryBreakdownView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F239D300FBDA600E73ED6 /* CategoryBreakdownView.swift */; };
 		360F23A0300FBF2500E73ED6 /* CategoryDetailView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F239F300FBF2500E73ED6 /* CategoryDetailView.swift */; };
+		360F23A2300FCD2300E73ED6 /* ExpenseCSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F23A1300FCD2200E73ED6 /* ExpenseCSVExporter.swift */; };
+		360F23A4300FCE1B00E73ED6 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F23A3300FCE1B00E73ED6 /* ShareSheet.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -37,6 +39,8 @@
 		360F239B300F756100E73ED6 /* AddCategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddCategoryView.swift; sourceTree = "<group>"; };
 		360F239D300FBDA600E73ED6 /* CategoryBreakdownView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryBreakdownView.swift; sourceTree = "<group>"; };
 		360F239F300FBF2500E73ED6 /* CategoryDetailView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryDetailView.swift; sourceTree = "<group>"; };
+		360F23A1300FCD2200E73ED6 /* ExpenseCSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCSVExporter.swift; sourceTree = "<group>"; };
+		360F23A3300FCE1B00E73ED6 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -91,6 +95,8 @@
 		360F2386300E77A900E73ED6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				360F23A3300FCE1B00E73ED6 /* ShareSheet.swift */,
+				360F23A1300FCD2200E73ED6 /* ExpenseCSVExporter.swift */,
 				360F239F300FBF2500E73ED6 /* CategoryDetailView.swift */,
 				360F239D300FBDA600E73ED6 /* CategoryBreakdownView.swift */,
 				360F239B300F756100E73ED6 /* AddCategoryView.swift */,
@@ -183,6 +189,8 @@
 				360F239A300F74FE00E73ED6 /* CategoryManagementView.swift in Sources */,
 				360F23A0300FBF2500E73ED6 /* CategoryDetailView.swift in Sources */,
 				360F2391300E7C4500E73ED6 /* AddExpenseView.swift in Sources */,
+				360F23A4300FCE1B00E73ED6 /* ShareSheet.swift in Sources */,
+				360F23A2300FCD2300E73ED6 /* ExpenseCSVExporter.swift in Sources */,
 				360F239E300FBDA600E73ED6 /* CategoryBreakdownView.swift in Sources */,
 				360F239C300F756200E73ED6 /* AddCategoryView.swift in Sources */,
 				360F2396300E876D00E73ED6 /* AppThemes.swift in Sources */,

@@ -21,8 +21,10 @@ struct CategoryBreakdownView: View {
 
     @State private var rangeStart: Date
     @State private var rangeEnd: Date
-    @State private var selectedOption: RangeOption = .period
-
+    @State private var exportURL: URL?
+    @State private var showingShareSheet = false
+    @State private var activeRange: ActiveRange = .period
+    
     init(periodTitle: String, allExpenses: [Expense], categories: [ExpenseCategory], currencyCode: String, periodStart: Date, periodEnd: Date) {
         self.periodTitle = periodTitle
         self.allExpenses = allExpenses
@@ -83,33 +85,80 @@ struct CategoryBreakdownView: View {
             .padding(.bottom, 24)
         }
         .background(Color(.systemGroupedBackground))
-        .navigationTitle(periodTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .principal) {
+                Button {
+                    resetToPeriod()
+                } label: {
+                    HStack(spacing: 4) {
+                        Text(displayTitle)
+                            .font(.system(size: 17, weight: .semibold))
+                            .lineLimit(1)
+                        if activeRange != .period {
+                            Image(systemName: "arrow.counterclockwise")
+                                .font(.system(size: 12, weight: .semibold))
+                        }
+                    }
+                    .foregroundStyle(AppTheme.slate)
+                }
+            }
+            ToolbarItem(placement: .topBarTrailing) {
+                Button {
+                    exportCSV()
+                } label: {
+                    Image(systemName: "square.and.arrow.up.circle.fill")
+                        .font(.system(size: 22))
+                        .foregroundStyle(AppTheme.teal)
+                }
+            }
+        }
+        .sheet(isPresented: $showingShareSheet) {
+            if let exportURL {
+                ShareSheet(activityItems: [exportURL])
+            }
+        }
     }
 
     private enum RangeOption: String, CaseIterable {
-        case period = "Period"
         case threeMonths = "3M"
         case sixMonths = "6M"
         case year = "1Y"
         case custom = "Custom"
     }
 
+    private enum ActiveRange: Equatable {
+        case period
+        case option(RangeOption)
+    }
+
+    private var selectedOptionBinding: Binding<RangeOption?> {
+        Binding<RangeOption?>(
+            get: {
+                if case .option(let opt) = activeRange { return opt }
+                return nil
+            },
+            set: { newValue in
+                if let newValue {
+                    activeRange = .option(newValue)
+                    applyOption(newValue)
+                }
+            }
+        )
+    }
+    
     private var dateRangeCard: some View {
         VStack(spacing: 12) {
-            Picker("Range", selection: $selectedOption) {
+            Picker("Range", selection: selectedOptionBinding) {
                 ForEach(RangeOption.allCases, id: \.self) { option in
-                    Text(option.rawValue).tag(option)
+                    Text(option.rawValue).tag(Optional(option))
                 }
             }
             .pickerStyle(.segmented)
-            .onChange(of: selectedOption) { _, newValue in
-                applyOption(newValue)
-            }
 
             Group {
-                if selectedOption == .custom {
-                    HStack(spacing: 12) {
+                if case .option(.custom) = activeRange {
+                    HStack(spacing: 24) {
                         VStack(alignment: .leading, spacing: 2) {
                             Text("From")
                                 .font(.caption)
@@ -117,8 +166,6 @@ struct CategoryBreakdownView: View {
                             DatePicker("", selection: $rangeStart, in: ...rangeEnd, displayedComponents: .date)
                                 .labelsHidden()
                         }
-
-                        Spacer()
 
                         VStack(alignment: .leading, spacing: 2) {
                             Text("To")
@@ -128,13 +175,12 @@ struct CategoryBreakdownView: View {
                                 .labelsHidden()
                         }
                     }
+                    .frame(maxWidth: .infinity, alignment: .center)
                 } else {
-                    HStack {
-                        Text(rangeSummary)
-                            .font(.subheadline)
-                            .foregroundStyle(.secondary)
-                        Spacer()
-                    }
+                    Text(rangeSummary)
+                        .font(.subheadline)
+                        .foregroundStyle(.secondary)
+                        .frame(maxWidth: .infinity, alignment: .center)
                 }
             }
             .frame(height: 44)
@@ -142,7 +188,21 @@ struct CategoryBreakdownView: View {
         .padding(16)
         .background(Color(.systemBackground))
         .clipShape(RoundedRectangle(cornerRadius: 16))
-        .animation(.easeInOut(duration: 0.2), value: selectedOption)
+        .animation(.easeInOut(duration: 0.2), value: activeRange)
+    }
+    
+    private var displayTitle: String {
+        switch activeRange {
+        case .period:
+            return periodTitle
+        case .option(let opt):
+            switch opt {
+            case .threeMonths: return "Last 3 Months"
+            case .sixMonths: return "Last 6 Months"
+            case .year: return "Last Year"
+            case .custom: return "Custom Range"
+            }
+        }
     }
 
     private var rangeSummary: String {
@@ -154,9 +214,6 @@ struct CategoryBreakdownView: View {
     private func applyOption(_ option: RangeOption) {
         let calendar = Calendar.current
         switch option {
-        case .period:
-            rangeStart = periodStart
-            rangeEnd = periodEnd
         case .threeMonths:
             rangeEnd = .now
             rangeStart = calendar.date(byAdding: .month, value: -3, to: .now) ?? periodStart
@@ -170,6 +227,19 @@ struct CategoryBreakdownView: View {
             break
         }
     }
+
+    private func resetToPeriod() {
+        rangeStart = periodStart
+        rangeEnd = periodEnd
+        activeRange = .period
+    }
+    
+    private func exportCSV() {
+        guard let url = ExpenseCSVExporter.writeToTempFile(expenses: expenses) else { return }
+        exportURL = url
+        showingShareSheet = true
+    }
+    
     private func presetChip(_ label: String, months: Int) -> some View {
         Button {
             applyPreset(months: months)

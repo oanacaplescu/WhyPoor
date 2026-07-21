@@ -4,9 +4,13 @@ import SwiftData
 struct SettingsView: View {
     @Environment(\.modelContext) private var context
     @Query private var categories: [ExpenseCategory]
+    @Query(sort: \Expense.date, order: .reverse) private var allExpenses: [Expense]
 
     @AppStorage("salaryDay") private var salaryDay: Int = 1
     @AppStorage("currencyCode") private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
+
+    @State private var exportURL: URL?
+    @State private var showingShareSheet = false
 
     private let commonCurrencies = ["USD", "EUR", "GBP", "RON", "CHF", "JPY", "CAD", "AUD"]
 
@@ -26,6 +30,14 @@ struct SettingsView: View {
                     }
                 }
             }
+            
+            Section("Export") {
+                Button {
+                    exportCSV()
+                } label: {
+                    Label("Export All Expenses (CSV)", systemImage: "square.and.arrow.up")
+                }
+            }
 
             #if DEBUG
             Section("Testing") {
@@ -39,6 +51,17 @@ struct SettingsView: View {
             #endif
         }
         .navigationTitle("Settings")
+        .sheet(isPresented: $showingShareSheet) {
+            if let exportURL {
+                ShareSheet(activityItems: [exportURL])
+            }
+        }
+    }
+    
+    private func exportCSV() {
+        guard let url = ExpenseCSVExporter.writeToTempFile(expenses: allExpenses) else { return }
+        exportURL = url
+        showingShareSheet = true
     }
 
     #if DEBUG
