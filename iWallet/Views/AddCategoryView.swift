@@ -6,6 +6,8 @@ struct AddCategoryView: View {
     @Environment(\.dismiss) private var dismiss
     @Query private var categories: [ExpenseCategory]
 
+    private static let maxNameLength = 30
+
     @State private var name = ""
     @State private var selectedIcon: String = ExpenseCategory.icons.first ?? "tag.fill"
 
@@ -16,6 +18,17 @@ struct AddCategoryView: View {
             Form {
                 Section("Name") {
                     TextField("Category name", text: $name)
+                        .onChange(of: name) { _, newValue in
+                            if newValue.count > Self.maxNameLength {
+                                name = String(newValue.prefix(Self.maxNameLength))
+                            }
+                        }
+                    HStack {
+                        Spacer()
+                        Text("\(name.count)/\(Self.maxNameLength)")
+                            .font(.caption)
+                            .foregroundStyle(name.count >= Self.maxNameLength ? .red : .secondary)
+                    }
                 }
 
                 Section("Icon") {
