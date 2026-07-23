@@ -12,9 +12,9 @@ struct ExpenseListView: View {
     @State private var showingAddExpense = false
     @State private var showingSettings = false
     @State private var showingPeriodPicker = false
+    @State private var showingCategoryManagement = false
     @State private var selectedPeriod: BillingPeriod?
     @State private var expenseToEdit: Expense?
-    @State private var showingCategoryManagement = false
 
     private var currentPeriod: BillingPeriod {
         selectedPeriod ?? BillingPeriod.containing(date: .now, salaryDay: salaryDay)
@@ -27,7 +27,7 @@ struct ExpenseListView: View {
     private var periodExpenses: [Expense] {
         allExpenses.filter { $0.date >= currentPeriod.start && $0.date <= currentPeriod.end }
     }
-    
+
     private var groupedExpenses: [(day: Date, expenses: [Expense])] {
         let calendar = Calendar.current
         let grouped = Dictionary(grouping: periodExpenses) { calendar.startOfDay(for: $0.date) }
@@ -35,7 +35,7 @@ struct ExpenseListView: View {
             .sorted { $0.key > $1.key }
             .map { (day: $0.key, expenses: $0.value.sorted { $0.date > $1.date }) }
     }
-    
+
     private var total: Decimal {
         periodExpenses.reduce(0) { $0 + $1.amount }
     }
@@ -63,73 +63,75 @@ struct ExpenseListView: View {
             ZStack {
                 List {
                     Section {
-                            NavigationLink {
-                                CategoryBreakdownView(
-                                    periodTitle: periodTitle,
-                                    allExpenses: allExpenses,
-                                    categories: allCategories,
-                                    currencyCode: currencyCode,
-                                    periodStart: currentPeriod.start,
-                                    periodEnd: currentPeriod.end
-                                )
-                            } label: {
-                                VStack(alignment: .center, spacing: 4) {
-                                    Text("Expenses")
-                                        .font(.subheadline)
-                                        .foregroundStyle(.secondary)
-                                    Text(total, format: .currency(code: currencyCode))
-                                        .font(.system(size: 34, weight: .bold))
-                                        .foregroundStyle(AppTheme.slate)
-                                }
-                                .frame(maxWidth: .infinity)
-                                .padding(.vertical, 8)
-                                .contentShape(Rectangle())
+                        NavigationLink {
+                            CategoryBreakdownView(
+                                periodTitle: periodTitle,
+                                allExpenses: allExpenses,
+                                categories: allCategories,
+                                currencyCode: currencyCode,
+                                periodStart: currentPeriod.start,
+                                periodEnd: currentPeriod.end
+                            )
+                        } label: {
+                            VStack(alignment: .center, spacing: 4) {
+                                Text("Expenses")
+                                    .font(.subheadline)
+                                    .foregroundStyle(.secondary)
+                                Text(total, format: .currency(code: currencyCode))
+                                    .font(.system(size: 34, weight: .bold))
+                                    .foregroundStyle(AppTheme.slate)
                             }
-                            .buttonStyle(.plain)
+                            .frame(maxWidth: .infinity)
+                            .padding(.vertical, 8)
+                            .contentShape(Rectangle())
                         }
+                        .buttonStyle(.plain)
+                    }
                     .listRowBackground(AppTheme.sand.opacity(0.25))
-                    
-                    Section {
-                        ForEach(groupedExpenses, id: \.day) { group in
-                            Section {
-                                ForEach(group.expenses) { expense in
-                                    let style = style(for: expense.category)
-                                    HStack(spacing: 12) {
-                                        Image(systemName: style.icon)
-                                            .foregroundStyle(.white)
-                                            .frame(width: 32, height: 32)
-                                            .background(Circle().fill(style.color))
-                                        
-                                        VStack(alignment: .leading) {
-                                            Text(expense.category)
-                                            if let desc = expense.expenseDescription, !desc.isEmpty {
-                                                Text(desc)
-                                                    .font(.caption)
-                                                    .foregroundStyle(.secondary)
-                                            }
+
+                    ForEach(groupedExpenses, id: \.day) { group in
+                        Section {
+                            ForEach(group.expenses) { expense in
+                                let style = style(for: expense.category)
+                                HStack(spacing: 12) {
+                                    Image(systemName: style.icon)
+                                        .foregroundStyle(.white)
+                                        .frame(width: 32, height: 32)
+                                        .background(Circle().fill(style.color))
+
+                                    VStack(alignment: .leading) {
+                                        Text(expense.category)
+                                        if let desc = expense.expenseDescription, !desc.isEmpty {
+                                            Text(desc)
+                                                .font(.caption)
+                                                .foregroundStyle(.secondary)
                                         }
-                                        
-                                        Spacer()
-                                        Text(expense.amount, format: .currency(code: currencyCode))
                                     }
-                                    .contentShape(Rectangle())
-                                    .onTapGesture {
-                                        expenseToEdit = expense
-                                    }
+
+                                    Spacer()
+                                    Text(expense.amount, format: .currency(code: currencyCode))
                                 }
-                                .onDelete { offsets in
-                                    deleteExpenses(offsets, in: group.expenses)
+                                .contentShape(Rectangle())
+                                .onTapGesture {
+                                    expenseToEdit = expense
                                 }
-                            } header: {
-                                Text(dayLabel(for: group.day))
-                                        .font(.subheadline)
-                                        .fontWeight(.semibold)
-                                        .foregroundStyle(AppTheme.slate)
-                                        .padding(.top, 8)                            }
+                            }
+                            .onDelete { offsets in
+                                deleteExpenses(offsets, in: group.expenses)
+                            }
+                        } header: {
+                            Text(dayLabel(for: group.day))
+                                .font(.subheadline)
+                                .fontWeight(.semibold)
+                                .foregroundStyle(AppTheme.slate)
+                                .padding(.top, 8)
                         }
                     }
                 }
-                
+                .refreshable {
+                    await refreshFromCloud()
+                }
+
                 VStack {
                     Spacer()
                     Button {
@@ -145,14 +147,14 @@ struct ExpenseListView: View {
                     }
                     .padding(.bottom, 24)
                 }
-                
+
                 if showingPeriodPicker {
                     Color.clear
                         .contentShape(Rectangle())
                         .ignoresSafeArea()
                         .onTapGesture { showingPeriodPicker = false }
                         .zIndex(1)
-                    
+
                     VStack(spacing: 0) {
                         PeriodPickerView(
                             periods: availablePeriods,
@@ -172,24 +174,19 @@ struct ExpenseListView: View {
                         .background(Color(.systemBackground))
                         .clipShape(RoundedRectangle(cornerRadius: 14))
                         .shadow(color: .black.opacity(0.2), radius: 12, y: 6)
-                        
+
                         Spacer()
-                        }
-                        .frame(maxWidth: .infinity, alignment: .center)
-                        .padding(.top, 8)
-                        .zIndex(2)
                     }
+                    .frame(maxWidth: .infinity, alignment: .center)
+                    .padding(.top, 8)
+                    .zIndex(2)
+                }
             }
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .topBarLeading) {
                     Button { showingSettings = true } label: {
                         Image(systemName: "gearshape")
-                    }
-                }
-                ToolbarItem(placement: .topBarTrailing) {
-                    Button { showingCategoryManagement = true } label: {
-                        Image(systemName: "tag")
                     }
                 }
                 ToolbarItem(placement: .principal) {
@@ -203,6 +200,11 @@ struct ExpenseListView: View {
                             .frame(width: 170, alignment: .center)
                     }
                 }
+                ToolbarItem(placement: .topBarTrailing) {
+                    Button { showingCategoryManagement = true } label: {
+                        Image(systemName: "tag")
+                    }
+                }
             }
             .sheet(isPresented: $showingAddExpense) {
                 AddExpenseView()
@@ -210,11 +212,11 @@ struct ExpenseListView: View {
             .sheet(isPresented: $showingSettings) {
                 NavigationStack { SettingsView() }
             }
-            .sheet(item: $expenseToEdit) { expense in
-                AddExpenseView(expenseToEdit: expense)
-            }
             .sheet(isPresented: $showingCategoryManagement) {
                 CategoryManagementView()
+            }
+            .sheet(item: $expenseToEdit) { expense in
+                AddExpenseView(expenseToEdit: expense)
             }
         }
     }
@@ -229,12 +231,6 @@ struct ExpenseListView: View {
         title(for: currentPeriod)
     }
 
-    private func deleteExpenses(_ offsets: IndexSet, in expenses: [Expense]) {
-        for index in offsets {
-            context.delete(expenses[index])
-        }
-    }
-
     private func dayLabel(for date: Date) -> String {
         if Calendar.current.isDateInToday(date) {
             return "Today"
@@ -244,5 +240,16 @@ struct ExpenseListView: View {
         let formatter = DateFormatter()
         formatter.dateFormat = "EEEE, MMM d"
         return formatter.string(from: date)
+    }
+
+    private func deleteExpenses(_ offsets: IndexSet, in expenses: [Expense]) {
+        for index in offsets {
+            context.delete(expenses[index])
+        }
+    }
+
+    private func refreshFromCloud() async {
+        context.processPendingChanges()
+        try? await Task.sleep(nanoseconds: 500_000_000)
     }
 }

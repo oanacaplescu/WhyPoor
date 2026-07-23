@@ -3,10 +3,10 @@ import Foundation
 
 @Model
 final class ExpenseCategory {
-    var name: String
-    var colorHex: String
-    var iconName: String
-    var sortOrder: Int
+    var name: String = ""
+    var colorHex: String = "#4A90D9"
+    var iconName: String = "tag.fill"
+    var sortOrder: Int = 0
 
     init(name: String, colorHex: String, iconName: String, sortOrder: Int = 0) {
         self.name = name

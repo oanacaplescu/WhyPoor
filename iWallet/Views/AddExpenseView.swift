@@ -98,7 +98,7 @@ struct AddExpenseView: View {
                 }
                 ToolbarItem(placement: .confirmationAction) {
                     Button("Save") { save() }
-                        .disabled(Decimal(string: amountText) == nil)
+                        .disabled(Decimal(string: amountText) == nil || (showingNewCategoryField && newCategoryName.trimmingCharacters(in: .whitespaces).isEmpty))
                 }
             }
             .onAppear { loadExistingValues() }
