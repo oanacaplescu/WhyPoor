@@ -6,30 +6,50 @@ struct CategoryManagementView: View {
     @Query(sort: \ExpenseCategory.sortOrder) private var categories: [ExpenseCategory]
 
     @State private var showingAddCategory = false
+    @State private var localOrder: [ExpenseCategory] = []
+    @State private var draggedID: PersistentIdentifier?
+    @State private var dragTranslation: CGFloat = 0
+
+    private let rowHeight: CGFloat = 60
+
+    private var draggedIndex: Int? {
+        guard let draggedID else { return nil }
+        return localOrder.firstIndex { $0.persistentModelID == draggedID }
+    }
+
+    private var rowsMoved: Int {
+        Int((dragTranslation / rowHeight).rounded())
+    }
 
     var body: some View {
         NavigationStack {
             ZStack {
-                List {
-                    ForEach(categories) { category in
-                        HStack(spacing: 12) {
-                            Image(systemName: category.iconName)
-                                .foregroundStyle(.white)
-                                .frame(width: 32, height: 32)
-                                .background(Circle().fill(Color(hex: category.colorHex)))
-                            Text(category.name)
-                        }
-                        .swipeActions {
-                            Button(role: .destructive) {
-                                delete(category)
-                            } label: {
-                                Label("Delete", systemImage: "trash")
+                ScrollView {
+                    VStack(spacing: 0) {
+                        ForEach(Array(localOrder.enumerated()), id: \.element.persistentModelID) { index, category in
+                            CategoryRow(
+                                category: category,
+                                rowHeight: rowHeight,
+                                onDelete: { delete(category) },
+                                onDragChanged: { translation in
+                                    draggedID = category.persistentModelID
+                                    dragTranslation = translation
+                                },
+                                onDragEnded: {
+                                    commitDrag(from: index)
+                                }
+                            )
+                            .offset(y: visualOffset(for: index))
+                            .zIndex(draggedID == category.persistentModelID ? 1 : 0)
+
+                            if index < localOrder.count - 1 {
+                                Divider().padding(.leading, 60)
                             }
                         }
                     }
-                    .onMove(perform: moveCategories)
+                    .padding(.bottom, 90)
                 }
-                .environment(\.editMode, .constant(.active))
+                .background(Color(.systemBackground))
 
                 VStack {
                     Spacer()
@@ -52,18 +72,121 @@ struct CategoryManagementView: View {
             .sheet(isPresented: $showingAddCategory) {
                 AddCategoryView()
             }
+            .onAppear { localOrder = categories }
+            .onChange(of: categories) { _, newValue in
+                if draggedID == nil {
+                    localOrder = newValue
+                }
+            }
         }
+    }
+
+    private func visualOffset(for index: Int) -> CGFloat {
+        guard let draggedIndex else { return 0 }
+
+        if index == draggedIndex {
+            return dragTranslation
+        }
+
+        let target = draggedIndex + rowsMoved
+        if rowsMoved > 0, index > draggedIndex, index <= target {
+            return -rowHeight
+        }
+        if rowsMoved < 0, index < draggedIndex, index >= target {
+            return rowHeight
+        }
+        return 0
+    }
+
+    private func commitDrag(from index: Int) {
+        let target = max(0, min(localOrder.count - 1, index + rowsMoved))
+
+        if target != index {
+            var reordered = localOrder
+            let item = reordered.remove(at: index)
+            reordered.insert(item, at: target)
+            for (i, category) in reordered.enumerated() {
+                category.sortOrder = i
+            }
+            // Update local order synchronously, in step with the sortOrder
+            // writes, so there's no gap waiting for @Query to catch up —
+            // that gap was causing the release glitch.
+            localOrder = reordered
+        }
+
+        draggedID = nil
+        dragTranslation = 0
     }
 
     private func delete(_ category: ExpenseCategory) {
         context.delete(category)
+        localOrder.removeAll { $0.persistentModelID == category.persistentModelID }
     }
+}
 
-    private func moveCategories(from source: IndexSet, to destination: Int) {
-        var reordered = categories
-        reordered.move(fromOffsets: source, toOffset: destination)
-        for (index, category) in reordered.enumerated() {
-            category.sortOrder = index
+private struct CategoryRow: View {
+    let category: ExpenseCategory
+    let rowHeight: CGFloat
+    let onDelete: () -> Void
+    let onDragChanged: (CGFloat) -> Void
+    let onDragEnded: () -> Void
+
+    @State private var swipeOffset: CGFloat = 0
+    private let deleteButtonWidth: CGFloat = 80
+
+    var body: some View {
+        ZStack {
+            HStack {
+                Spacer()
+                Button(role: .destructive) {
+                    onDelete()
+                } label: {
+                    Image(systemName: "trash")
+                        .foregroundStyle(.white)
+                        .frame(width: deleteButtonWidth, height: rowHeight)
+                        .background(Color.red)
+                }
+            }
+
+            HStack(spacing: 12) {
+                Image(systemName: category.iconName)
+                    .foregroundStyle(.white)
+                    .frame(width: 32, height: 32)
+                    .background(Circle().fill(Color(hex: category.colorHex)))
+                Text(category.name)
+                Spacer()
+                Image(systemName: "line.3.horizontal")
+                    .foregroundStyle(.secondary)
+                    .frame(width: 44, height: 44)
+                    .contentShape(Rectangle())
+                    .gesture(
+                        DragGesture(coordinateSpace: .global)
+                            .onChanged { value in
+                                onDragChanged(value.translation.height)
+                            }
+                            .onEnded { _ in
+                                onDragEnded()
+                            }
+                    )
+            }
+            .padding(.horizontal, 16)
+            .frame(height: rowHeight)
+            .background(Color(.systemBackground))
+            .offset(x: swipeOffset)
+            .gesture(
+                DragGesture(minimumDistance: 15)
+                    .onChanged { value in
+                        guard value.translation.width < 0 else { return }
+                        swipeOffset = max(value.translation.width, -deleteButtonWidth)
+                    }
+                    .onEnded { value in
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            swipeOffset = value.translation.width < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
+                        }
+                    }
+            )
         }
+        .frame(height: rowHeight)
+        .clipped()
     }
 }
