@@ -8,10 +8,15 @@ struct AddCategoryView: View {
 
     private static let maxNameLength = 30
 
+    /// Pass an existing category to edit it; leave nil to create a new one.
+    var categoryToEdit: ExpenseCategory?
+
     @State private var name = ""
     @State private var selectedIcon: String = ExpenseCategory.icons.first ?? "tag.fill"
 
     private let gridColumns = Array(repeating: GridItem(.flexible()), count: 6)
+
+    private var isEditing: Bool { categoryToEdit != nil }
 
     var body: some View {
         NavigationStack {
@@ -48,8 +53,16 @@ struct AddCategoryView: View {
                     }
                     .padding(.vertical, 4)
                 }
+
+                if isEditing {
+                    Section {
+                        Button("Delete Category", role: .destructive) {
+                            deleteAndDismiss()
+                        }
+                    }
+                }
             }
-            .navigationTitle("New Category")
+            .navigationTitle(isEditing ? "Edit Category" : "New Category")
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {
                     Button("Cancel") { dismiss() }
@@ -59,18 +72,37 @@ struct AddCategoryView: View {
                         .disabled(name.trimmingCharacters(in: .whitespaces).isEmpty)
                 }
             }
+            .onAppear { loadExistingValues() }
         }
     }
 
+    private func loadExistingValues() {
+        guard let category = categoryToEdit else { return }
+        name = category.name
+        selectedIcon = category.iconName
+    }
+
     private func save() {
-        let colorHex = ExpenseCategory.palette[categories.count % ExpenseCategory.palette.count]
-        let newCategory = ExpenseCategory(
-            name: name,
-            colorHex: colorHex,
-            iconName: selectedIcon,
-            sortOrder: categories.count
-        )
-        context.insert(newCategory)
+        if let category = categoryToEdit {
+            category.name = name
+            category.iconName = selectedIcon
+        } else {
+            let colorHex = ExpenseCategory.palette[categories.count % ExpenseCategory.palette.count]
+            let newCategory = ExpenseCategory(
+                name: name,
+                colorHex: colorHex,
+                iconName: selectedIcon,
+                sortOrder: categories.count
+            )
+            context.insert(newCategory)
+        }
+        dismiss()
+    }
+
+    private func deleteAndDismiss() {
+        if let category = categoryToEdit {
+            context.delete(category)
+        }
         dismiss()
     }
 }

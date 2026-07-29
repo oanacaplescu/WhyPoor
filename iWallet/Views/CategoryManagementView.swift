@@ -6,6 +6,7 @@ struct CategoryManagementView: View {
     @Query(sort: \ExpenseCategory.sortOrder) private var categories: [ExpenseCategory]
 
     @State private var showingAddCategory = false
+    @State private var categoryToEdit: ExpenseCategory?
     @State private var localOrder: [ExpenseCategory] = []
     @State private var draggedID: PersistentIdentifier?
     @State private var dragTranslation: CGFloat = 0
@@ -30,6 +31,7 @@ struct CategoryManagementView: View {
                             CategoryRow(
                                 category: category,
                                 rowHeight: rowHeight,
+                                onTap: { categoryToEdit = category },
                                 onDelete: { delete(category) },
                                 onDragChanged: { translation in
                                     draggedID = category.persistentModelID
@@ -71,6 +73,9 @@ struct CategoryManagementView: View {
             .navigationBarTitleDisplayMode(.inline)
             .sheet(isPresented: $showingAddCategory) {
                 AddCategoryView()
+            }
+            .sheet(item: $categoryToEdit) { category in
+                AddCategoryView(categoryToEdit: category)
             }
             .onAppear { localOrder = categories }
             .onChange(of: categories) { _, newValue in
@@ -127,6 +132,7 @@ struct CategoryManagementView: View {
 private struct CategoryRow: View {
     let category: ExpenseCategory
     let rowHeight: CGFloat
+    let onTap: () -> Void
     let onDelete: () -> Void
     let onDragChanged: (CGFloat) -> Void
     let onDragEnded: () -> Void
@@ -170,21 +176,31 @@ private struct CategoryRow: View {
                     )
             }
             .padding(.horizontal, 16)
-            .frame(height: rowHeight)
-            .background(Color(.systemBackground))
-            .offset(x: swipeOffset)
-            .gesture(
-                DragGesture(minimumDistance: 15)
-                    .onChanged { value in
-                        guard value.translation.width < 0 else { return }
-                        swipeOffset = max(value.translation.width, -deleteButtonWidth)
-                    }
-                    .onEnded { value in
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            swipeOffset = value.translation.width < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
+                        .frame(height: rowHeight)
+                        .background(Color(.systemBackground))
+                        .offset(x: swipeOffset)
+                        .contentShape(Rectangle())
+                        .onTapGesture {
+                            if swipeOffset == 0 {
+                                onTap()
+                            } else {
+                                withAnimation(.easeOut(duration: 0.2)) {
+                                    swipeOffset = 0
+                                }
+                            }
                         }
-                    }
-            )
+                        .gesture(
+                            DragGesture(minimumDistance: 15)
+                                .onChanged { value in
+                                    guard value.translation.width < 0 else { return }
+                                    swipeOffset = max(value.translation.width, -deleteButtonWidth)
+                                }
+                                .onEnded { value in
+                                    withAnimation(.easeOut(duration: 0.2)) {
+                                        swipeOffset = value.translation.width < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
+                                    }
+                                }
+                        )
         }
         .frame(height: rowHeight)
         .clipped()
