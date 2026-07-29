@@ -137,7 +137,12 @@ struct AddExpenseView: View {
                         )
                 }
             }
-            .onAppear { loadExistingValues() }
+            .onAppear {
+                loadExistingValues()
+                if selectedCategory == nil, !showingNewCategoryField {
+                    selectedCategory = categories.first
+                }
+            }
         }
     }
 
