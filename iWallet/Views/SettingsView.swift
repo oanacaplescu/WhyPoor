@@ -11,6 +11,7 @@ struct SettingsView: View {
 
     @State private var exportURL: URL?
     @State private var showingShareSheet = false
+    @State private var showingImport = false
 
     private let commonCurrencies = ["USD", "EUR", "GBP", "RON", "CHF", "JPY", "CAD", "AUD"]
 
@@ -39,6 +40,14 @@ struct SettingsView: View {
                 }
             }
 
+            Section("Import") {
+                Button {
+                    showingImport = true
+                } label: {
+                    Label("Import Expenses (CSV)", systemImage: "square.and.arrow.down")
+                }
+            }
+
             #if DEBUG
             Section("Testing") {
                 Button("Generate Sample Data (90 days)") {
@@ -55,6 +64,9 @@ struct SettingsView: View {
             if let exportURL {
                 ShareSheet(activityItems: [exportURL])
             }
+        }
+        .sheet(isPresented: $showingImport) {
+            ImportCSVView()
         }
     }
     

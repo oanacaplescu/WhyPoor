@@ -106,21 +106,19 @@ struct CategoryManagementView: View {
     private func commitDrag(from index: Int) {
         let target = max(0, min(localOrder.count - 1, index + rowsMoved))
 
-        if target != index {
-            var reordered = localOrder
-            let item = reordered.remove(at: index)
-            reordered.insert(item, at: target)
-            for (i, category) in reordered.enumerated() {
-                category.sortOrder = i
+        withAnimation(.easeInOut(duration: 0.2)) {
+            if target != index {
+                var reordered = localOrder
+                let item = reordered.remove(at: index)
+                reordered.insert(item, at: target)
+                for (i, category) in reordered.enumerated() {
+                    category.sortOrder = i
+                }
+                localOrder = reordered
             }
-            // Update local order synchronously, in step with the sortOrder
-            // writes, so there's no gap waiting for @Query to catch up —
-            // that gap was causing the release glitch.
-            localOrder = reordered
+            draggedID = nil
+            dragTranslation = 0
         }
-
-        draggedID = nil
-        dragTranslation = 0
     }
 
     private func delete(_ category: ExpenseCategory) {
@@ -141,9 +139,45 @@ private struct CategoryRow: View {
     private let deleteButtonWidth: CGFloat = 80
 
     var body: some View {
-        ZStack {
-            HStack {
-                Spacer()
+        GeometryReader { geo in
+            HStack(spacing: 0) {
+                // Main content
+                HStack(spacing: 12) {
+                    Image(systemName: category.iconName)
+                        .foregroundStyle(.white)
+                        .frame(width: 32, height: 32)
+                        .background(Circle().fill(Color(hex: category.colorHex)))
+                    Text(category.name)
+                    Spacer()
+                    Image(systemName: "line.3.horizontal")
+                        .foregroundStyle(.secondary)
+                        .frame(width: 44, height: 44)
+                        .contentShape(Rectangle())
+                        .gesture(
+                            DragGesture(coordinateSpace: .global)
+                                .onChanged { value in
+                                    onDragChanged(value.translation.height)
+                                }
+                                .onEnded { _ in
+                                    onDragEnded()
+                                }
+                        )
+                }
+                .padding(.horizontal, 16)
+                .frame(width: geo.size.width, height: rowHeight)
+                .background(Color(.systemBackground))
+                .contentShape(Rectangle())
+                .onTapGesture {
+                    if swipeOffset == 0 {
+                        onTap()
+                    } else {
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            swipeOffset = 0
+                        }
+                    }
+                }
+
+                // Delete button — a normal sibling, revealed by sliding the whole row left
                 Button(role: .destructive) {
                     onDelete()
                 } label: {
@@ -153,54 +187,22 @@ private struct CategoryRow: View {
                         .background(Color.red)
                 }
             }
-
-            HStack(spacing: 12) {
-                Image(systemName: category.iconName)
-                    .foregroundStyle(.white)
-                    .frame(width: 32, height: 32)
-                    .background(Circle().fill(Color(hex: category.colorHex)))
-                Text(category.name)
-                Spacer()
-                Image(systemName: "line.3.horizontal")
-                    .foregroundStyle(.secondary)
-                    .frame(width: 44, height: 44)
-                    .contentShape(Rectangle())
-                    .gesture(
-                        DragGesture(coordinateSpace: .global)
-                            .onChanged { value in
-                                onDragChanged(value.translation.height)
-                            }
-                            .onEnded { _ in
-                                onDragEnded()
-                            }
-                    )
-            }
-            .padding(.horizontal, 16)
-                        .frame(height: rowHeight)
-                        .background(Color(.systemBackground))
-                        .offset(x: swipeOffset)
-                        .contentShape(Rectangle())
-                        .onTapGesture {
-                            if swipeOffset == 0 {
-                                onTap()
-                            } else {
-                                withAnimation(.easeOut(duration: 0.2)) {
-                                    swipeOffset = 0
-                                }
-                            }
+            .offset(x: swipeOffset)
+            .simultaneousGesture(
+                DragGesture(minimumDistance: 15)
+                    .onChanged { value in
+                        let isHorizontalDrag = abs(value.translation.width) > abs(value.translation.height)
+                        guard isHorizontalDrag, value.translation.width < 0 else { return }
+                        swipeOffset = max(value.translation.width, -deleteButtonWidth)
+                    }
+                    .onEnded { value in
+                        let isHorizontalDrag = abs(value.translation.width) > abs(value.translation.height)
+                        guard isHorizontalDrag else { return }
+                        withAnimation(.easeOut(duration: 0.2)) {
+                            swipeOffset = value.translation.width < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
                         }
-                        .gesture(
-                            DragGesture(minimumDistance: 15)
-                                .onChanged { value in
-                                    guard value.translation.width < 0 else { return }
-                                    swipeOffset = max(value.translation.width, -deleteButtonWidth)
-                                }
-                                .onEnded { value in
-                                    withAnimation(.easeOut(duration: 0.2)) {
-                                        swipeOffset = value.translation.width < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
-                                    }
-                                }
-                        )
+                    }
+            )
         }
         .frame(height: rowHeight)
         .clipped()

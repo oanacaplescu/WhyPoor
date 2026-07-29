@@ -23,6 +23,8 @@
 		360F23A2300FCD2300E73ED6 /* ExpenseCSVExporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F23A1300FCD2200E73ED6 /* ExpenseCSVExporter.swift */; };
 		360F23A4300FCE1B00E73ED6 /* ShareSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F23A3300FCE1B00E73ED6 /* ShareSheet.swift */; };
 		36FD32743012298600738062 /* SplashView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FD32733012298600738062 /* SplashView.swift */; };
+		36FD32763019E6B100738062 /* CSVImporter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FD32753019E6B000738062 /* CSVImporter.swift */; };
+		36FD32783019E6C400738062 /* ImportCSVView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36FD32773019E6C300738062 /* ImportCSVView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -43,6 +45,8 @@
 		360F23A1300FCD2200E73ED6 /* ExpenseCSVExporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseCSVExporter.swift; sourceTree = "<group>"; };
 		360F23A3300FCE1B00E73ED6 /* ShareSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareSheet.swift; sourceTree = "<group>"; };
 		36FD32733012298600738062 /* SplashView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashView.swift; sourceTree = "<group>"; };
+		36FD32753019E6B000738062 /* CSVImporter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CSVImporter.swift; sourceTree = "<group>"; };
+		36FD32773019E6C300738062 /* ImportCSVView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ImportCSVView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
@@ -98,6 +102,7 @@
 		360F2385300E779F00E73ED6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				36FD32753019E6B000738062 /* CSVImporter.swift */,
 				360F2395300E876800E73ED6 /* AppThemes.swift */,
 				360F2393300E83E000E73ED6 /* CategoryColors.swift */,
 				360F238C300E79BB00E73ED6 /* BillingPeriod.swift */,
@@ -110,6 +115,7 @@
 		360F2386300E77A900E73ED6 /* Views */ = {
 			isa = PBXGroup;
 			children = (
+				36FD32773019E6C300738062 /* ImportCSVView.swift */,
 				36FD32733012298600738062 /* SplashView.swift */,
 				360F23A3300FCE1B00E73ED6 /* ShareSheet.swift */,
 				360F23A1300FCD2200E73ED6 /* ExpenseCSVExporter.swift */,
@@ -201,6 +207,7 @@
 			files = (
 				360F2392300E7C4A00E73ED6 /* SettingsView.swift in Sources */,
 				360F238E300E7C0D00E73ED6 /* Expense.swift in Sources */,
+				36FD32763019E6B100738062 /* CSVImporter.swift in Sources */,
 				36FD32743012298600738062 /* SplashView.swift in Sources */,
 				360F238D300E7BF700E73ED6 /* ExpenseCategory.swift in Sources */,
 				360F239A300F74FE00E73ED6 /* CategoryManagementView.swift in Sources */,
@@ -215,6 +222,7 @@
 				360F238F300E7C2500E73ED6 /* ExpenseListView.swift in Sources */,
 				360F2394300E83E200E73ED6 /* CategoryColors.swift in Sources */,
 				360F2398300F351700E73ED6 /* PeriodPickerView.swift in Sources */,
+				36FD32783019E6C400738062 /* ImportCSVView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
