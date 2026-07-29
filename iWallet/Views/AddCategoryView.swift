@@ -5,6 +5,7 @@ struct AddCategoryView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query private var categories: [ExpenseCategory]
+    @Query private var allExpenses: [Expense]
 
     private static let maxNameLength = 30
 
@@ -13,6 +14,7 @@ struct AddCategoryView: View {
 
     @State private var name = ""
     @State private var selectedIcon: String = ExpenseCategory.icons.first ?? "tag.fill"
+    @State private var showingDeleteWarning = false
 
     private let gridColumns = Array(repeating: GridItem(.flexible()), count: 6)
 
@@ -57,7 +59,12 @@ struct AddCategoryView: View {
                 if isEditing {
                     Section {
                         Button("Delete Category", role: .destructive) {
-                            deleteAndDismiss()
+                            let count = allExpenses.filter { $0.category == categoryToEdit?.name }.count
+                            if count > 0 {
+                                showingDeleteWarning = true
+                            } else {
+                                deleteAndDismiss()
+                            }
                         }
                     }
                 }
@@ -73,6 +80,15 @@ struct AddCategoryView: View {
                 }
             }
             .onAppear { loadExistingValues() }
+            .alert("Delete Category?", isPresented: $showingDeleteWarning) {
+                Button("Delete", role: .destructive) {
+                    deleteAndDismiss()
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: {
+                let count = allExpenses.filter { $0.category == categoryToEdit?.name }.count
+                Text("\(count) expense\(count == 1 ? "" : "s") use this category. They'll keep their data, but lose their icon and color.")
+            }
         }
     }
 

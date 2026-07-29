@@ -4,9 +4,12 @@ import SwiftData
 struct CategoryManagementView: View {
     @Environment(\.modelContext) private var context
     @Query(sort: \ExpenseCategory.sortOrder) private var categories: [ExpenseCategory]
+    @Query private var allExpenses: [Expense]
 
     @State private var showingAddCategory = false
     @State private var categoryToEdit: ExpenseCategory?
+    @State private var categoryPendingDelete: ExpenseCategory?
+    @State private var showingDeleteWarning = false
     @State private var localOrder: [ExpenseCategory] = []
     @State private var draggedID: PersistentIdentifier?
     @State private var dragTranslation: CGFloat = 0
@@ -32,7 +35,7 @@ struct CategoryManagementView: View {
                                 category: category,
                                 rowHeight: rowHeight,
                                 onTap: { categoryToEdit = category },
-                                onDelete: { delete(category) },
+                                onDelete: { requestDelete(category) },
                                 onDragChanged: { translation in
                                     draggedID = category.persistentModelID
                                     dragTranslation = translation
@@ -76,6 +79,15 @@ struct CategoryManagementView: View {
             }
             .sheet(item: $categoryToEdit) { category in
                 AddCategoryView(categoryToEdit: category)
+            }
+            .alert("Delete Category?", isPresented: $showingDeleteWarning, presenting: categoryPendingDelete) { category in
+                Button("Delete", role: .destructive) {
+                    performDelete(category)
+                }
+                Button("Cancel", role: .cancel) {}
+            } message: { category in
+                let count = allExpenses.filter { $0.category == category.name }.count
+                Text("\(count) expense\(count == 1 ? "" : "s") use this category. They'll keep their data, but lose their icon and color.")
             }
             .onAppear { localOrder = categories }
             .onChange(of: categories) { _, newValue in
@@ -121,7 +133,17 @@ struct CategoryManagementView: View {
         }
     }
 
-    private func delete(_ category: ExpenseCategory) {
+    private func requestDelete(_ category: ExpenseCategory) {
+        let usageCount = allExpenses.filter { $0.category == category.name }.count
+        if usageCount > 0 {
+            categoryPendingDelete = category
+            showingDeleteWarning = true
+        } else {
+            performDelete(category)
+        }
+    }
+
+    private func performDelete(_ category: ExpenseCategory) {
         context.delete(category)
         localOrder.removeAll { $0.persistentModelID == category.persistentModelID }
     }
