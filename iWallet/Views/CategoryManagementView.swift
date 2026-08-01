@@ -29,7 +29,7 @@ struct CategoryManagementView: View {
         NavigationStack {
             ZStack {
                 ScrollView {
-                    VStack(spacing: 0) {
+                    LazyVStack(spacing: 0) {
                         ForEach(Array(localOrder.enumerated()), id: \.element.persistentModelID) { index, category in
                             CategoryRow(
                                 category: category,
@@ -188,6 +188,24 @@ private struct CategoryRow: View {
                 .padding(.horizontal, 16)
                 .frame(width: geo.size.width, height: rowHeight)
                 .background(Color(.systemBackground))
+                .overlay(alignment: .leading) {
+                    // Swipe-to-delete gesture layer — stops short of the handle
+                    // icon on the right, so it never steals touches meant for
+                    // dragging/reordering.
+                    SwipeGestureView(
+                        onChanged: { translationX in
+                            guard translationX < 0 else { return }
+                            swipeOffset = max(translationX, -deleteButtonWidth)
+                        },
+                        onEnded: { translationX in
+                            withAnimation(.easeOut(duration: 0.2)) {
+                                swipeOffset = translationX < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
+                            }
+                        }
+                    )
+                    .frame(width: max(geo.size.width - 60, 0))
+                    .contentShape(Rectangle())
+                }
                 .contentShape(Rectangle())
                 .onTapGesture {
                     if swipeOffset == 0 {
@@ -210,21 +228,6 @@ private struct CategoryRow: View {
                 }
             }
             .offset(x: swipeOffset)
-            .simultaneousGesture(
-                DragGesture(minimumDistance: 15)
-                    .onChanged { value in
-                        let isHorizontalDrag = abs(value.translation.width) > abs(value.translation.height)
-                        guard isHorizontalDrag, value.translation.width < 0 else { return }
-                        swipeOffset = max(value.translation.width, -deleteButtonWidth)
-                    }
-                    .onEnded { value in
-                        let isHorizontalDrag = abs(value.translation.width) > abs(value.translation.height)
-                        guard isHorizontalDrag else { return }
-                        withAnimation(.easeOut(duration: 0.2)) {
-                            swipeOffset = value.translation.width < -deleteButtonWidth / 2 ? -deleteButtonWidth : 0
-                        }
-                    }
-            )
         }
         .frame(height: rowHeight)
         .clipped()
