@@ -56,6 +56,9 @@ struct SettingsView: View {
                 Button("Delete All Expenses", role: .destructive) {
                     deleteAllExpenses()
                 }
+                Button("Delete All Categories", role: .destructive) {
+                    deleteAllCategories()
+                }
             }
             #endif
         }
@@ -127,6 +130,16 @@ struct SettingsView: View {
         if let all = try? context.fetch(descriptor) {
             for expense in all {
                 context.delete(expense)
+            }
+        }
+        try? context.save()
+    }
+    
+    private func deleteAllCategories() {
+        let descriptor = FetchDescriptor<ExpenseCategory>()
+        if let all = try? context.fetch(descriptor) {
+            for category in all {
+                context.delete(category)
             }
         }
         try? context.save()
