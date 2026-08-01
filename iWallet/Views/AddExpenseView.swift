@@ -5,8 +5,8 @@ struct AddExpenseView: View {
     @Environment(\.modelContext) private var context
     @Environment(\.dismiss) private var dismiss
     @Query(sort: \ExpenseCategory.sortOrder) private var categories: [ExpenseCategory]
-    @AppStorage("currencyCode") private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
-
+    @AppStorage("currencyCode", store: AppGroup.sharedDefaults) private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
+    
     private static let maxDescriptionLength = 47
     private static let maxCategoryNameLength = 30
 

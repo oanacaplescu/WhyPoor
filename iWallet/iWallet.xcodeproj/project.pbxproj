@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		36069209301E81E100A5ADAF /* SharedModelContainer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36069208301E81E100A5ADAF /* SharedModelContainer.swift */; };
+		3606920B301E81F100A5ADAF /* CategoryEntity.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3606920A301E81F100A5ADAF /* CategoryEntity.swift */; };
+		3606920D301E823900A5ADAF /* AddExpenseIntent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3606920C301E823800A5ADAF /* AddExpenseIntent.swift */; };
+		3606920F301E824300A5ADAF /* AddExpenseShortcuts.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3606920E301E824300A5ADAF /* AddExpenseShortcuts.swift */; };
+		36069211301E850E00A5ADAF /* AppGroup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 36069210301E850E00A5ADAF /* AppGroup.swift */; };
 		360F238D300E7BF700E73ED6 /* ExpenseCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F238B300E79AF00E73ED6 /* ExpenseCategory.swift */; };
 		360F238E300E7C0D00E73ED6 /* Expense.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F238A300E799D00E73ED6 /* Expense.swift */; };
 		360F238F300E7C2500E73ED6 /* ExpenseListView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 360F2387300E78B700E73ED6 /* ExpenseListView.swift */; };
@@ -28,6 +33,11 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		36069208301E81E100A5ADAF /* SharedModelContainer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SharedModelContainer.swift; sourceTree = "<group>"; };
+		3606920A301E81F100A5ADAF /* CategoryEntity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryEntity.swift; sourceTree = "<group>"; };
+		3606920C301E823800A5ADAF /* AddExpenseIntent.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseIntent.swift; sourceTree = "<group>"; };
+		3606920E301E824300A5ADAF /* AddExpenseShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseShortcuts.swift; sourceTree = "<group>"; };
+		36069210301E850E00A5ADAF /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		360F2375300E729400E73ED6 /* iWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		360F2387300E78B700E73ED6 /* ExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListView.swift; sourceTree = "<group>"; };
 		360F2388300E78E700E73ED6 /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
@@ -102,6 +112,11 @@
 		360F2385300E779F00E73ED6 /* Models */ = {
 			isa = PBXGroup;
 			children = (
+				36069210301E850E00A5ADAF /* AppGroup.swift */,
+				3606920E301E824300A5ADAF /* AddExpenseShortcuts.swift */,
+				3606920C301E823800A5ADAF /* AddExpenseIntent.swift */,
+				3606920A301E81F100A5ADAF /* CategoryEntity.swift */,
+				36069208301E81E100A5ADAF /* SharedModelContainer.swift */,
 				36FD32753019E6B000738062 /* CSVImporter.swift */,
 				360F2395300E876800E73ED6 /* AppThemes.swift */,
 				360F2393300E83E000E73ED6 /* CategoryColors.swift */,
@@ -208,10 +223,13 @@
 				360F2392300E7C4A00E73ED6 /* SettingsView.swift in Sources */,
 				360F238E300E7C0D00E73ED6 /* Expense.swift in Sources */,
 				36FD32763019E6B100738062 /* CSVImporter.swift in Sources */,
+				3606920F301E824300A5ADAF /* AddExpenseShortcuts.swift in Sources */,
 				36FD32743012298600738062 /* SplashView.swift in Sources */,
 				360F238D300E7BF700E73ED6 /* ExpenseCategory.swift in Sources */,
 				360F239A300F74FE00E73ED6 /* CategoryManagementView.swift in Sources */,
+				36069211301E850E00A5ADAF /* AppGroup.swift in Sources */,
 				360F23A0300FBF2500E73ED6 /* CategoryDetailView.swift in Sources */,
+				36069209301E81E100A5ADAF /* SharedModelContainer.swift in Sources */,
 				360F2391300E7C4500E73ED6 /* AddExpenseView.swift in Sources */,
 				360F23A4300FCE1B00E73ED6 /* ShareSheet.swift in Sources */,
 				360F23A2300FCD2300E73ED6 /* ExpenseCSVExporter.swift in Sources */,
@@ -219,7 +237,9 @@
 				360F239C300F756200E73ED6 /* AddCategoryView.swift in Sources */,
 				360F2396300E876D00E73ED6 /* AppThemes.swift in Sources */,
 				360F2390300E7C3400E73ED6 /* BillingPeriod.swift in Sources */,
+				3606920B301E81F100A5ADAF /* CategoryEntity.swift in Sources */,
 				360F238F300E7C2500E73ED6 /* ExpenseListView.swift in Sources */,
+				3606920D301E823900A5ADAF /* AddExpenseIntent.swift in Sources */,
 				360F2394300E83E200E73ED6 /* CategoryColors.swift in Sources */,
 				360F2398300F351700E73ED6 /* PeriodPickerView.swift in Sources */,
 				36FD32783019E6C400738062 /* ImportCSVView.swift in Sources */,

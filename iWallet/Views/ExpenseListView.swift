@@ -7,8 +7,8 @@ struct ExpenseListView: View {
     @Query(sort: \Expense.date, order: .reverse) private var allExpenses: [Expense]
     @Query private var allCategories: [ExpenseCategory]
     @AppStorage("salaryDay") private var salaryDay: Int = 1
-    @AppStorage("currencyCode") private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
-
+    @AppStorage("currencyCode", store: AppGroup.sharedDefaults) private var currencyCode: String = Locale.current.currency?.identifier ?? "USD"
+    
     @State private var showingAddExpense = false
     @State private var showingSettings = false
     @State private var showingPeriodPicker = false
