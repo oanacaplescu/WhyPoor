@@ -2,7 +2,7 @@ import SwiftUI
 import SwiftData
 
 @main
-struct iWalletApp: App {
+struct WhyPoorApp: App {
     @State private var showingSplash = true
 
     var body: some Scene {

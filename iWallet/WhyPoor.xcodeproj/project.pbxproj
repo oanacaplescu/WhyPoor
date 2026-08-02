@@ -40,7 +40,7 @@
 		3606920E301E824300A5ADAF /* AddExpenseShortcuts.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseShortcuts.swift; sourceTree = "<group>"; };
 		36069210301E850E00A5ADAF /* AppGroup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppGroup.swift; sourceTree = "<group>"; };
 		36069212301E8AC500A5ADAF /* SwipeGestureView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SwipeGestureView.swift; sourceTree = "<group>"; };
-		360F2375300E729400E73ED6 /* iWallet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iWallet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		360F2375300E729400E73ED6 /* WhyPoor.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WhyPoor.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		360F2387300E78B700E73ED6 /* ExpenseListView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ExpenseListView.swift; sourceTree = "<group>"; };
 		360F2388300E78E700E73ED6 /* AddExpenseView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddExpenseView.swift; sourceTree = "<group>"; };
 		360F2389300E78F300E73ED6 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
@@ -62,22 +62,22 @@
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedBuildFileExceptionSet section */
-		36FD32723012263200738062 /* Exceptions for "iWallet" folder in "iWallet" target */ = {
+		36FD32723012263200738062 /* Exceptions for "WhyPoor" folder in "WhyPoor" target */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
 				Info.plist,
 			);
-			target = 360F2374300E729400E73ED6 /* iWallet */;
+			target = 360F2374300E729400E73ED6 /* WhyPoor */;
 		};
 /* End PBXFileSystemSynchronizedBuildFileExceptionSet section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
-		360F2377300E729400E73ED6 /* iWallet */ = {
+		360F2377300E729400E73ED6 /* WhyPoor */ = {
 			isa = PBXFileSystemSynchronizedRootGroup;
 			exceptions = (
-				36FD32723012263200738062 /* Exceptions for "iWallet" folder in "iWallet" target */,
+				36FD32723012263200738062 /* Exceptions for "WhyPoor" folder in "WhyPoor" target */,
 			);
-			path = iWallet;
+			path = WhyPoor;
 			sourceTree = "<group>";
 		};
 /* End PBXFileSystemSynchronizedRootGroup section */
@@ -98,7 +98,7 @@
 			children = (
 				360F2386300E77A900E73ED6 /* Views */,
 				360F2385300E779F00E73ED6 /* Models */,
-				360F2377300E729400E73ED6 /* iWallet */,
+				360F2377300E729400E73ED6 /* WhyPoor */,
 				360F2376300E729400E73ED6 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -106,7 +106,7 @@
 		360F2376300E729400E73ED6 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				360F2375300E729400E73ED6 /* iWallet.app */,
+				360F2375300E729400E73ED6 /* WhyPoor.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -152,9 +152,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		360F2374300E729400E73ED6 /* iWallet */ = {
+		360F2374300E729400E73ED6 /* WhyPoor */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 360F2382300E729700E73ED6 /* Build configuration list for PBXNativeTarget "iWallet" */;
+			buildConfigurationList = 360F2382300E729700E73ED6 /* Build configuration list for PBXNativeTarget "WhyPoor" */;
 			buildPhases = (
 				360F2371300E729400E73ED6 /* Sources */,
 				360F2372300E729400E73ED6 /* Frameworks */,
@@ -165,13 +165,13 @@
 			dependencies = (
 			);
 			fileSystemSynchronizedGroups = (
-				360F2377300E729400E73ED6 /* iWallet */,
+				360F2377300E729400E73ED6 /* WhyPoor */,
 			);
-			name = iWallet;
+			name = WhyPoor;
 			packageProductDependencies = (
 			);
 			productName = iWallet;
-			productReference = 360F2375300E729400E73ED6 /* iWallet.app */;
+			productReference = 360F2375300E729400E73ED6 /* WhyPoor.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -189,7 +189,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 360F2370300E729400E73ED6 /* Build configuration list for PBXProject "iWallet" */;
+			buildConfigurationList = 360F2370300E729400E73ED6 /* Build configuration list for PBXProject "WhyPoor" */;
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
@@ -203,7 +203,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				360F2374300E729400E73ED6 /* iWallet */,
+				360F2374300E729400E73ED6 /* WhyPoor */,
 			);
 		};
 /* End PBXProject section */
@@ -374,7 +374,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iWallet/iWallet.entitlements;
+				CODE_SIGN_ENTITLEMENTS = WhyPoor/WhyPoor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NN4887DAA5;
@@ -383,7 +383,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iWallet/Info.plist;
+				INFOPLIST_FILE = WhyPoor/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -399,7 +399,7 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.amzisda.iWallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.amzisda.WhyPoor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -420,7 +420,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
-				CODE_SIGN_ENTITLEMENTS = iWallet/iWallet.entitlements;
+				CODE_SIGN_ENTITLEMENTS = WhyPoor/WhyPoor.entitlements;
 				CODE_SIGN_STYLE = Automatic;
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_TEAM = NN4887DAA5;
@@ -429,7 +429,7 @@
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_FILE = iWallet/Info.plist;
+				INFOPLIST_FILE = WhyPoor/Info.plist;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphoneos*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSceneManifest_Generation[sdk=iphonesimulator*]" = YES;
 				"INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents[sdk=iphoneos*]" = YES;
@@ -445,8 +445,8 @@
 				"LD_RUNPATH_SEARCH_PATHS[sdk=macosx*]" = "@executable_path/../Frameworks";
 				MACOSX_DEPLOYMENT_TARGET = 26.5;
 				MARKETING_VERSION = 1.0;
-				PRODUCT_BUNDLE_IDENTIFIER = com.oany.iWallet;
-				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.amzisda.iWallet;
+				PRODUCT_BUNDLE_IDENTIFIER = com.oany.WhyPoor;
+				"PRODUCT_BUNDLE_IDENTIFIER[sdk=iphoneos*]" = com.amzisda.WhyPoor;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				REGISTER_APP_GROUPS = YES;
 				SDKROOT = auto;
@@ -465,7 +465,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		360F2370300E729400E73ED6 /* Build configuration list for PBXProject "iWallet" */ = {
+		360F2370300E729400E73ED6 /* Build configuration list for PBXProject "WhyPoor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				360F2380300E729700E73ED6 /* Debug */,
@@ -474,7 +474,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		360F2382300E729700E73ED6 /* Build configuration list for PBXNativeTarget "iWallet" */ = {
+		360F2382300E729700E73ED6 /* Build configuration list for PBXNativeTarget "WhyPoor" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				360F2383300E729700E73ED6 /* Debug */,
