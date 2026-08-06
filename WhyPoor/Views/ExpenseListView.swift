@@ -15,6 +15,7 @@ struct ExpenseListView: View {
     @State private var showingCategoryManagement = false
     @State private var selectedPeriod: BillingPeriod?
     @State private var expenseToEdit: Expense?
+    @State private var showingWelcome = !AppGroup.sharedDefaults.bool(forKey: "hasSeenWelcome")
 
     private var currentPeriod: BillingPeriod {
         selectedPeriod ?? BillingPeriod.containing(date: .now, salaryDay: salaryDay)
@@ -217,6 +218,11 @@ struct ExpenseListView: View {
             }
             .sheet(item: $expenseToEdit) { expense in
                 AddExpenseView(expenseToEdit: expense)
+            }
+            .fullScreenCover(isPresented: $showingWelcome, onDismiss: {
+                AppGroup.sharedDefaults.set(true, forKey: "hasSeenWelcome")
+            }) {
+                WelcomeView()
             }
         }
     }
